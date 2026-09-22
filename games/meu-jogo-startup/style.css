@@ -1,0 +1,102 @@
+/* ============================================================
+   ESTILOS GERAIS E CONFIGURAÇÕES VISUAIS
+   ============================================================ */
+
+* { 
+  font-family: 'Inter', sans-serif; 
+}
+
+body { 
+  -webkit-user-select: none; 
+  user-select: none; 
+}
+
+.selectable { 
+  -webkit-user-select: text; 
+  user-select: text; 
+}
+
+/* Personalização da barra de rolagem */
+::-webkit-scrollbar { 
+  width: 6px; 
+  height: 6px; 
+}
+::-webkit-scrollbar-track { 
+  background: #0f172a; 
+}
+::-webkit-scrollbar-thumb { 
+  background: #334155; 
+  border-radius: 4px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+  background: #475569; 
+}
+
+/* Efeitos de Brilho (Glow) */
+.glow-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.25); }
+.glow-blue   { box-shadow: 0 0 15px rgba(59, 130, 246, 0.25); }
+.glow-green  { box-shadow: 0 0 15px rgba(34, 197, 94, 0.25); }
+
+/* Overlay de texto flutuante ao clicar (ganho de dinheiro) */
+#floatingOverlay {
+  position: fixed; 
+  inset: 0; 
+  pointer-events: none; 
+  z-index: 60; 
+  overflow: hidden;
+}
+
+.floating-text {
+  position: absolute;
+  font-weight: 800;
+  white-space: nowrap;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  animation: floatUp 1.1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+  15%  { opacity: 1; transform: translate(-50%, -80%) scale(1.15); }
+  100% { opacity: 0; transform: translate(-50%, -220%) scale(0.85); }
+}
+
+/* Animação para eventos críticos */
+@keyframes pulseBorder {
+  0%, 100% { border-color: rgba(239, 68, 68, 0.9); }
+  50%      { border-color: rgba(239, 68, 68, 0.15); }
+}
+.event-alert { 
+  animation: pulseBorder 1.5s infinite; 
+}
+
+/* Gradiente animado para progresso */
+.bg-gradient-animated {
+  background: linear-gradient(270deg, #6366f1, #a855f7, #ec4899);
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Pulso visual suave no botão de codar */
+@keyframes workPulse {
+  0%, 100% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.35); }
+  50%      { box-shadow: 0 0 40px rgba(168, 85, 247, 0.6); }
+}
+.work-pulse { 
+  animation: workPulse 2.5s ease-in-out infinite; 
+}
+
+/* Redução de animações para acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+  * { 
+    animation-duration: 0.001ms !important; 
+    animation-iteration-count: 1 !important; 
+    transition-duration: 0.001ms !important; 
+  }
+}

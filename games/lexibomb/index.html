@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiBomb | ArcadeHub</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="site-wrapper">
+        <header class="navbar">
+            <a href="../../index.html" class="back-home">← Voltar ao Portal</a>
+            <div class="logo">⚡ Lexi<span>Bomb</span></div>
+        </header>
+
+        <main class="main-container">
+            <!-- TELA 1: INTRODUÇÃO -->
+            <section id="intro-screen" class="card screen active">
+                <div class="card-header">
+                    <h2>LexiBomb</h2>
+                    <p>Forme palavras válidas usando o fragmento da bomba.</p>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>⚠️ Regra Importante</h4>
+                        <p>Você <strong>não pode</strong> apenas repetir as letras da bomba (ex: se cair "TRE", digitar apenas "tre" é inválido). A palavra deve ser maior e conter o trecho.</p>
+                    </div>
+                </div>
+                <button class="btn-primary" id="goToDiffBtn">Selecionar Nível</button>
+            </section>
+
+            <!-- TELA 2: MENU DE FASES -->
+            <section id="menu-screen" class="card screen">
+                <div class="card-header">
+                    <h2>Módulos de Desafio</h2>
+                    <p>Supere as metas para avançar.</p>
+                </div>
+                <div class="levels-grid">
+                    <button class="level-card" data-diff="basico"><span class="lvl-title">Básico</span><span class="lvl-desc">14s • Meta: 5</span><span class="lvl-status">Disponível</span></button>
+                    <button class="level-card" id="btn-medio" data-diff="medio" disabled><span class="lvl-title">Médio</span><span class="lvl-desc">9s • Meta: 8</span><span class="lvl-status">Bloqueado 🔒</span></button>
+                    <button class="level-card" id="btn-dificil" data-diff="dificil" disabled><span class="lvl-title">Difícil</span><span class="lvl-desc">6s • Meta: 12</span><span class="lvl-status">Bloqueado 🔒</span></button>
+                    <button class="level-card" id="btn-impossivel" data-diff="impossivel" disabled><span class="lvl-title">Impossível</span><span class="lvl-desc">4s • Meta: 15</span><span class="lvl-status">Bloqueado 🔒</span></button>
+                </div>
+                <button class="btn-text" id="backToIntroBtn">← Voltar</button>
+            </section>
+
+            <!-- TELA 3: JOGO -->
+            <section id="game-screen" class="card screen">
+                <div class="game-top-bar">
+                    <div class="session-info">Fase: <span id="currentLevelName">Básico</span></div>
+                    <div class="session-info">Progresso: <span id="scoreCount">0</span> / <span id="targetCount">5</span></div>
+                </div>
+
+                <div class="challenge-box">
+                    <div class="bomb-icon">💣</div>
+                    <div class="fragment-display" id="syllableDisplay">--</div>
+                    <p class="fragment-hint">Escreva uma palavra que contenha este trecho</p>
+                </div>
+
+                <div class="timer-track"><div class="timer-fill" id="timerBar"></div></div>
+
+                <div class="input-area">
+                    <input type="text" id="wordInput" placeholder="Digite e pressione Enter..." autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="history-container">
+                    <span class="history-label">Palavras aceitas:</span>
+                    <div class="history-tags" id="historyTags"><span class="empty-history">Nenhuma palavra...</span></div>
+                </div>
+
+                <button class="btn-text danger" id="backToMenuBtn" style="margin-top: 15px;">Abandonar Partida</button>
+            </section>
+        </main>
+        
+        <footer class="footer"><p>&copy; 2026 ArcadeHub</p></footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+:root {
+    --bg: #0f1015;
+    --card-bg: #1a1b24;
+    --border: #2a2b3d;
+    --primary: #6366f1;
+    --text: #f3f4f6;
+    --muted: #9ca3af;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+.portal-header { text-align: center; margin-bottom: 40px; }
+.portal-header h1 { font-size: 2.5rem; font-weight: 700; }
+.portal-header h1 span { color: var(--primary); }
+.portal-header p { color: var(--muted); margin-top: 8px; }
+
+.portal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 320px));
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    justify-content: center;
+}
+
+.game-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.game-card:not(.disabled):hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.game-card.disabled { opacity: 0.5; cursor: not-allowed; }
+.card-icon { font-size: 40px; }
+.card-info h3 { font-size: 1.25rem; margin-bottom: 6px; }
+.card-info p { font-size: 0.85rem; color: var(--muted); margin-bottom: 15px; line-height: 1.4; }
+.play-btn { font-size: 0.85rem; font-weight: 600; color: var(--primary); }
+.portal-footer { color: var(--muted); font-size: 0.8rem; margin-top: 40px; }
