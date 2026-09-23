@@ -126,7 +126,7 @@
     totalClicks: 0,
     playTimeSeconds: 0,
     stageIndex: 0,
-    buyAmount: 1, // Multiplicador de compra na loja (1x, 5x, 10x, 50x)
+    buyAmount: 1,
     soundEnabled: true,
     lastTickTimestamp: Date.now(),
     employees: {},
@@ -205,10 +205,6 @@
     return n.toLocaleString('pt-BR', { minimumFractionDigits: d, maximumFractionDigits: d });
   }
 
-  /**
-   * Calcula o custo acumulado de comprar N itens (Série Geométrica)
-   * Formula: Custo = BaseCost * (1.15^count) * ((1.15^amount - 1) / 0.15)
-   */
   function getEmployeeBulkCost(emp, amount) {
     const currentCount = state.employees[emp.id] || 0;
     const rate = 1.15;
@@ -294,6 +290,53 @@
       ? '<i class="fa-solid fa-volume-high"></i>' 
       : '<i class="fa-solid fa-volume-xmark"></i>';
     toast(state.soundEnabled ? 'Som ativado' : 'Som desativado', 'info');
+  }
+
+  /* ============================================================
+     SISTEMA DE EVENTOS DINÂMICOS (CORRIGIDO)
+     ============================================================ */
+  function triggerRandomEvent() {
+    if (activeEvent) return; // Se já houver um evento ativo, não dispara outro
+
+    const randomEvent = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+    activeEvent = randomEvent;
+
+    playSound('event');
+    toast(`⚠️ Novo evento: ${randomEvent.title}`, 'warning');
+    logNews(`ALERTA: O evento "${randomEvent.title}" apareceu!`);
+
+    renderActiveEvent();
+  }
+
+  function renderActiveEvent() {
+    if (!activeEvent) {
+      if (dom.activeEventCard) dom.activeEventCard.classList.add('hidden');
+      if (dom.eventBadge) dom.eventBadge.classList.add('hidden');
+      return;
+    }
+
+    if (dom.eventBadge) dom.eventBadge.classList.remove('hidden');
+    if (dom.activeEventCard) dom.activeEventCard.classList.remove('hidden');
+
+    if (dom.eventIconContainer) dom.eventIconContainer.innerHTML = `<i class="fa-solid ${activeEvent.icon}"></i>`;
+    if (dom.eventTitle) dom.eventTitle.textContent = activeEvent.title;
+    if (dom.eventDescription) dom.eventDescription.textContent = activeEvent.desc;
+
+    if (dom.eventOptionsContainer) {
+      dom.eventOptionsContainer.innerHTML = '';
+      activeEvent.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full py-2.5 px-4 bg-slate-800 hover:bg-purple-600 text-white font-bold text-xs rounded-xl transition border border-slate-700 hover:border-purple-500 text-left flex items-center justify-between';
+        btn.innerHTML = `<span>${opt.label}</span> <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>`;
+        btn.addEventListener('click', () => {
+          opt.action(state);
+          activeEvent = null;
+          renderActiveEvent();
+          updateUI();
+        });
+        dom.eventOptionsContainer.appendChild(btn);
+      });
+    }
   }
 
   /* ============================================================
@@ -627,7 +670,6 @@
     dom.statTotalEarned.textContent = `R$ ${fmt(state.totalEarned)}`;
     dom.statTotalClicks.textContent = state.totalClicks.toLocaleString('pt-BR');
 
-    // Atualiza Funcionários na Loja com o Multiplicador Atual (1x, 5x, 10x, 50x)
     for (const emp of EMPLOYEES) {
       const ref = employeeRefs[emp.id];
       if (!ref) continue;
@@ -676,8 +718,6 @@
     try {
       const loaded = JSON.parse(raw);
       state = Object.assign(buildDefaultState(), loaded);
-      
-      // Ajusta seleção inicial de quantidade
       setBuyAmount(state.buyAmount || 1);
     } catch {}
   }
@@ -685,6 +725,8 @@
   function confirmReset() {
     try { localStorage.removeItem(SAVE_KEY); } catch {}
     state = buildDefaultState();
+    activeEvent = null;
+    renderActiveEvent();
     dom.resetModal.classList.add('hidden');
     updateUI();
     updateUpgradesUI();
@@ -721,7 +763,6 @@
      DELEGAÇÃO DE EVENTOS E INICIALIZAÇÃO
      ============================================================ */
   function setupEventListeners() {
-    // Cliques e Botões Principais
     dom.btnPlayGame.addEventListener('click', startGame);
     dom.btnOpenCredits.addEventListener('click', openCredits);
     dom.btnCloseCredits.addEventListener('click', closeCredits);
@@ -749,7 +790,6 @@
       }
     });
 
-    // Atalhos do teclado (Espaço/Enter para codar)
     document.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !dom.screenMenu.classList.contains('hidden')) return;
       if (e.code === 'Space' || e.code === 'Enter') {
@@ -767,8 +807,18 @@
     setupEventListeners();
     updateUI();
     updateUpgradesUI();
+    renderActiveEvent();
 
+    // Loops temporizados globais
     setInterval(saveGame, AUTOSAVE_INTERVAL);
+
+    // Sistema de checagem periódica de eventos (a cada EVENT_INTERVAL segundos)
+    setInterval(() => {
+      if (!activeEvent && Math.random() < EVENT_CHANCE) {
+        triggerRandomEvent();
+      }
+    }, EVENT_INTERVAL * 1000);
+
     requestAnimationFrame((t) => {
       lastFrameTime = t;
       requestAnimationFrame(gameLoop);
